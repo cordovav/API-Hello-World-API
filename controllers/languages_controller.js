@@ -1,4 +1,5 @@
 const express = require('express')
+const { count } = require('../models/language.js')
 const languages = express.Router()
 const Language = require('../models/language.js')
 
@@ -47,6 +48,21 @@ languages.get('/', (req, res) => {
     Language.find()
         .then(foundLanguages => {
             res.json(foundLanguages)
+        })
+})
+
+//random language
+languages.get('/random', async (req,res) => {
+    //use to count the number of documents are avaliable
+    let docCount = await Language.countDocuments()
+
+    //create a random document number
+    let randomDoc = Math.floor(Math.random() * docCount)
+
+    //find one document and skip to the randomly generated number above
+    Language.findOne().skip(randomDoc)
+        .then(foundLanguage => {
+            res.json(foundLanguage)
         })
 })
 
